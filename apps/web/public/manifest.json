@@ -1,0 +1,18 @@
+{
+  "name": "SAFESTEP — Safety Navigation",
+  "short_name": "SAFESTEP",
+  "description": "Safe routes, live location sharing with trusted contacts, and one-tap SOS assistance.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0B1426",
+  "theme_color": "#0B1426",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

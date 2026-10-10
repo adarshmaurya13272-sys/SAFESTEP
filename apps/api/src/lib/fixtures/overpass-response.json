@@ -1,0 +1,14 @@
+{
+  "elements": [
+    {
+      "type": "node",
+      "id": 123456,
+      "lat": 28.6304,
+      "lon": 77.2177,
+      "tags": {
+        "amenity": "police",
+        "name": "CP Police Station"
+      }
+    }
+  ]
+}

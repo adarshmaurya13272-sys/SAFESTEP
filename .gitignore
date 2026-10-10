@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+.turbo/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Local files
+.local/
+.local-services/pgdata/
+.local-services/pgsql/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

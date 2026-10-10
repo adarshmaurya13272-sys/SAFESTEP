@@ -1,0 +1,23 @@
+{
+  "name": "safestep",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SAFESTEP — Safety navigation PWA by NEXORA",
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "test:e2e": "pnpm --filter @safestep/web run test:e2e",
+    "db:migrate": "pnpm --filter @safestep/api run db:migrate",
+    "db:seed": "pnpm --filter @safestep/api run db:seed",
+    "db:studio": "pnpm --filter @safestep/api run db:studio",
+    "clean": "pnpm -r run clean"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@9.1.0"
+}

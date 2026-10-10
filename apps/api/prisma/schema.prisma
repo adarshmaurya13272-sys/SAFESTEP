@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String             @id @default(uuid())
+  email            String             @unique
+  passwordHash     String
+  name             String
+  phone            String?
+  emergencyNote    String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  refreshTokens    RefreshToken[]
+  trustedContacts  TrustedContact[]
+  journeys         Journey[]
+  sosEvents        SosEvent[]
+  notifications    Notification[]
+  incidents        Incident[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model TrustedContact {
+  id              String            @id @default(uuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  phone           String?
+  email           String?
+  status          String            @default("PENDING") // PENDING, ACCEPTED, REVOKED
+  inviteToken     String            @unique
+  consentedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  journeyContacts JourneyContact[]
+}
+
+model Journey {
+  id              String             @id @default(uuid())
+  userId          String
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status          String             @default("ACTIVE") // ACTIVE, COMPLETED, SOS
+  originLat       Float
+  originLng       Float
+  destLat         Float
+  destLng         Float
+  routeGeometry   Json
+  distance        Float
+  duration        Float
+  shareToken      String             @unique
+  startedAt       DateTime           @default(now())
+  endedAt         DateTime?
+  checkInBy       DateTime?
+  expiresAt       DateTime
+  createdAt       DateTime           @default(now())
+  journeyContacts JourneyContact[]
+  locationPings   LocationPing[]
+  sosEvents       SosEvent[]
+}
+
+model JourneyContact {
+  id               String         @id @default(uuid())
+  journeyId        String
+  contactId        String
+  journey          Journey        @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  trustedContact   TrustedContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+}
+
+model LocationPing {
+  id        String   @id @default(uuid())
+  journeyId String
+  journey   Journey  @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  lat       Float
+  lng       Float
+  accuracy  Float?
+  timestamp DateTime @default(now())
+
+  @@index([lat, lng])
+}
+
+model SosEvent {
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  journeyId  String?
+  journey    Journey?  @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  lat        Float
+  lng        Float
+  accuracy   Float?
+  status     String    @default("ACTIVE") // ACTIVE, RESOLVED
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  @@index([lat, lng])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  channel   String
+  recipient String
+  payload   Json
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+}
+
+model Incident {
+  id           String   @id @default(uuid())
+  category     String   // HARASSMENT, SUSPICIOUS_ACTIVITY, POOR_LIGHTING, OTHER
+  description  String?
+  lat          Float
+  lng          Float
+  severity     String   // LOW, MEDIUM, HIGH
+  isDemo       Boolean  @default(false)
+  flagsCount   Int      @default(0)
+  hidden       Boolean  @default(false)
+  reporterId   String
+  reporter     User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+
+  @@index([lat, lng])
+}
+
+model HelpPlaceCache {
+  id         String   @id @default(uuid())
+  placeType  String
+  name       String
+  lat        Float
+  lng        Float
+  phone      String?
+  rawData    Json?
+  queriedAt  DateTime @default(now())
+  expiresAt  DateTime
+
+  @@index([lat, lng])
+}
